@@ -1,12 +1,12 @@
-// (c) 1992 Allen I. Holub
+// (c) 1992 Allen I.Holub
 #line 111 "0.tr"
 #ifndef __DEBUG_H
 #define __DEBUG_H
 
 #ifdef  DEBUG
 #define PRIVATE
-#define D(x) x			/* expand only when debugging     */
-#define ND(x)			/* expand only when not debugging */
+#define D(x) x                  /* expand only when debugging     */
+#define ND(x)                   /* expand only when not debugging */
 #else
 #define PRIVATE static
 #define D(x)
@@ -15,20 +15,21 @@
 #define PUBLIC
 
 /*
- * NUMELE(array)	Evaluates to the array size in elements
- * LASTELE(array)	Evaluates to a pointer to the last element
+ * NUMELE(array)	    Evaluates to the array size in elements
+ * LASTELE(array)	    Evaluates to a pointer to the last element
  * INBOUNDS(array,p)    Evaluates to true if p points into the array.
- * RANGE(a,b,c)		Evaluates to true if a <= b <= c max(a,b)
- * valuates to a or b, whichever is larger min(a,b)		Evaluates to
- * a or b, whichever is smaller associated with a pointer NBITS(type)
- * eturns number of bits in a variable of the indicated type; MAXINT
- * valuates to the value of the largest signed integer
+ * RANGE(a,b,c)		    Evaluates to true if a <= b <= c 
+ * max(a,b)             Evaluates to a or b, whichever is larger 
+ * min(a,b)		        Evaluates to a or b, whichever is smaller
+ * NBITS(type)          Returns number of bits in a variable of the indicated
+ *                      type
+ * MAXINT               Evaluates to the value of the largest signed integer
  */
 
-#define NUMELE(a)	(sizeof(a)/sizeof(*(a)))
-#define LASTELE(a)	((a) + (NUMELE(a)-1))
+#define NUMELE(a)	    (sizeof(a)/sizeof(*(a)))
+#define LASTELE(a)	    ((a) + (NUMELE(a)-1))
 #define TOOHIGH(a,p)	((p) - (a) > (NUMELE(a) - 1))
-#define TOOLOW(a,p)	((p) - (a) <  0 )
+#define TOOLOW(a,p) 	((p) - (a) <  0 )
 #define INBOUNDS(a,p)	( ! (TOOHIGH(a,p) || TOOLOW(a,p)) )
 
 /*
@@ -72,4 +73,4 @@
 #include <tools/dmalloc.h>
 #endif
 
-#endif				/* #ifdef __DEBUG_H */
+#endif                          /* #ifdef __DEBUG_H */
