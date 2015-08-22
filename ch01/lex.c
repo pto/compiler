@@ -1,65 +1,55 @@
 /*@A (C) 1992 Allen I. Holub                                                */
-#include "lex.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <ctype.h>
+#include "lex.h"
 
-char       *yytext   = "";  /* Lexeme (not '\0' terminated)   */
-int        yyleng    = 0;   /* Lexeme length.                 */
-int        yylineno  = 0;   /* Input line number              */
+char *yytext = ""; // Lexeme (not '\0' terminated)
+int yyleng = 0;    // Lexeme length
+int yylineno = 0;  // Input line number
 
-int lex(void)
-{
+int lex(void) {
     static char input_buffer[BUFSIZ];
-    char        *current;
+    char *current;
 
-    current = yytext + yyleng;  /* Skip current lexeme  */
+    current = yytext + yyleng; // Skip current lexeme
 
-    while( 1 )                  /* Get the next one     */
-    {
-        while( !*current )
-        {
-            /* Get new lines, skipping any leading white space on the line,
-             * until a nonblank line is found.
-             */
-
+    while(true) {
+        while(*current == '\0') { // at end of line
+            // Get new line
             current = input_buffer;
-            if( !fgets( input_buffer, BUFSIZ, stdin ) )
-            {
-                *current = '\0' ;
+
+            if(fgets(input_buffer, BUFSIZ, stdin) == NULL) {
+                *current = '\0';
                 return EOI;
             }
 
             ++yylineno;
-
-            while( isspace(*current) )
+            while(isspace(*current))
                 ++current;
         }
 
-        for( ; *current ; ++current )
-        {
-            /* Get the next token */
-
+        for( ; *current; ++current) {
+            // Get next token
             yytext = current;
             yyleng = 1;
 
-            switch( *current )
-            {
-            case ';': return SEMI  ;
-            case '+': return PLUS  ;
-            case '*': return TIMES ;
-            case '(': return LP    ;
-            case ')': return RP    ;
+            switch( *current ) {
+            case ';': return SEMICOLON;
+            case '+': return PLUS;
+            case '*': return TIMES;
+            case '(': return LPAREN;
+            case ')': return RPAREN;
 
             case '\n':
             case '\t':
             case ' ' : break;
 
             default:
-                if( !isalnum(*current) )
+                if(!isalnum(*current))
                     fprintf(stderr, "Ignoring illegal input <%c>\n", *current);
-                else
-                {
-                    while( isalnum(*current) )
+                else {
+                    while(isalnum(*current))
                         ++current;
 
                     yyleng = current - yytext;
@@ -71,21 +61,17 @@ int lex(void)
         }
     }
 }
-static int Lookahead = -1;      /* Lookahead token  */
 
-int match( int token )
-{
-    /* Return true if "token" matches the current lookahead symbol. */
+static int Lookahead = -1; // Lookahead token
 
-    if( Lookahead == -1 )
+int match(int token) {
+    if(Lookahead == -1)
         Lookahead = lex();
 
     return token == Lookahead;
 }
 
-void advance(void)
-{
-    /* Advance the lookahead to the next input symbol.  */
-
+void advance(void) {
+    // Advance the lookahead to the next input symbol
     Lookahead = lex();
 }
