@@ -49,7 +49,9 @@
 /* 0 assures that the answer is 1 or 0  */
 
 #define NBITS(t) (4 * (1  + _IS(t, 4) + _IS(t, 8) + _IS(t,12) + _IS(t,16) \
-		          + _IS(t,20) + _IS(t,24) + _IS(t,28) + _IS(t,32) ) )
+		          + _IS(t,20) + _IS(t,24) + _IS(t,28) + _IS(t,32) \
+		          + _IS(t,36) + _IS(t,40) + _IS(t,44) + _IS(t,48) \
+		          + _IS(t,52) + _IS(t,56) + _IS(t,60) ) )
 
 #define MAXINT (((unsigned)~0) >> 1)
 
