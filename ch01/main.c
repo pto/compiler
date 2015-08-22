@@ -1,4 +1,4 @@
-/*@A (C) 1992 Allen I. Holub                                                */
+// (c) 1992 Allen I. Holub
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>

@@ -1,7 +1,7 @@
-/*@A (C) 1992 Allen I. Holub                                                */
+// (c) 1992 Allen I.Holub
 
 enum {
-    EOI, // end of input
+    EOI, //end of input
     SEMICOLON,
     PLUS,
     TIMES,
@@ -11,8 +11,8 @@ enum {
 };
 
 extern char *yytext;
-extern int  yyleng;
-extern int  yylineno;
+extern int yyleng;
+extern int yylineno;
 
 int lex(void);
 int match(int token);

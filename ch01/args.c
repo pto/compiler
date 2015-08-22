@@ -3,80 +3,67 @@
 #include <ctype.h>
 #include "lex.h"
 #include "name.h"
-#include "retval.h"
+#include "args.h"
 
-char *expression(void);
-char *term(void);
-char *factor(void);
+void expression(char *tempvar); 
+void term(char *tempvar);
+void factor(char *tempvar);
 
 void statements(void) {
     // statements -> expression SEMICOLON  |  expression SEMICOLON statements
 
     char *tempvar;
 
-    while (!match(EOI))
-    {
-        tempvar = expression();
+    while (!match(EOI)) {
+        expression(tempvar = newname());
+        freename(tempvar);
 
         if (match(SEMICOLON))
             advance();
         else
             fprintf(stderr, "%d: Inserting missing semicolon\n", yylineno);
-
-        freename(tempvar);
     }
 }
 
-char *expression(void) {
-    // expression -> term expression'
-    // expression' -> PLUS term expression' |  epsilon
+void expression(char *tempvar) {
+    // expression  -> term expression' expression' -> PLUS term expression'
+    //             |  epsilon
 
-    char *tempvar, *tempvar2;
+    char *tempvar2;
 
-    tempvar = term();
+    term(tempvar);
     while (match(PLUS)) {
         advance();
-        tempvar2 = term();
+        term(tempvar2 = newname());
         printf("    %s += %s\n", tempvar, tempvar2);
         freename(tempvar2);
     }
-
-    return tempvar;
 }
 
-char *term(void) {
-    char  *tempvar, *tempvar2 ;
+void term(char *tempvar) {
+    char *tempvar2;
 
-    tempvar = factor();
+    factor(tempvar);
     while (match(TIMES)) {
         advance();
-        tempvar2 = factor();
+        factor(tempvar2 = newname());
         printf("    %s *= %s\n", tempvar, tempvar2);
         freename(tempvar2);
     }
-
-    return tempvar;
 }
 
-char *factor(void) {
-    char *tempvar;
-
+void factor(char *tempvar) {
     if (match(NUM_OR_ID)) {
-        tempvar = newname();
-        printf("    %s = %s%.*s\n", tempvar, (isalpha(*yytext) ? "_" : " "),
+        printf("    %s = %s%.*s\n", tempvar, (isalpha(*yytext) ? "_" : ""),
                 yyleng, yytext);
         advance();
     } else if (match(LPAREN)) {
         advance();
-        tempvar = expression();
+        expression(tempvar);
         if (match(RPAREN))
             advance();
         else
             fprintf(stderr, "%d: Mismatched parenthesis\n", yylineno);
-    } else {
-        tempvar = newname(); // because it will be freed
+    } else
         fprintf(stderr, "%d: Number or identifier expected\n", yylineno);
-    }
-
-    return tempvar;
 }
